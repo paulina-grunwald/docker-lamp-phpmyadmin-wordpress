@@ -1,0 +1,47 @@
+version: "3"
+services:
+  # Database
+  db:
+    container_name: mysql
+    image: mysql:5.6.34
+    build: ./db
+    volumes:
+      - ./db:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    networks:
+      - wpsite
+  # phpmyadmin
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: password
+    networks:
+      - wpsite
+  # wordpress/php 7.0.3
+  wordpress:
+    container_name: wordpress
+    depends_on:
+      - db
+    image: php703:wordpress
+    build: ./www
+    volumes:
+      - ./www:/var/www/html
+    ports:
+      - "8081:80"
+    networks:
+      - wpsite
+
+networks:
+  wpsite:
+volumes:
+  db_data:
