@@ -64,6 +64,14 @@ RUN { \
 		echo 'html_errors = Off'; \
 	} > /usr/local/etc/php/conf.d/error-logging.ini
 
+RUN { \
+    echo 'max_execution_time = 259200'; \
+    echo 'max_input_time = 259200'; \
+    echo 'memory_limit = 1000M'; \
+    echo 'upload_max_filesize = 750M'; \
+    echo 'post_max_size = 750M'; \
+  } > /usr/local/etc/php/php.ini
+
 RUN a2enmod rewrite expires
 
 VOLUME /var/www/html
@@ -84,5 +92,8 @@ COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod 777 /usr/local/bin/docker-entrypoint.sh \
     && ln -s /usr/local/bin/docker-entrypoint.sh /
 
+RUN chmod 777 /tmp
+RUN mkdir /var/www/html/tmp
+RUN chmod 777 /var/www/html/tmp
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
