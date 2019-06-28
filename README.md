@@ -56,6 +56,51 @@ Accessible on `localhost:80` by default.
 
 Accessible on `localhost:81` by default. Use `MYSQL_USER` and `MYSQL_PASSWORD` to connect.
 
+### Possible problems
+
+If you are trying to load a large database using phpmyadmin and you get error try to follow following steps:
+
+1. Enter phpmyadmin container
+
+```
+docker exec -it phpmyadmin bash
+```
+
+2. Inside of the container:
+
+```
+cd /var/www/html#
+cat .htaccess
+```
+
+Edit the .htaccess file using command:
+
+```
+cat > .htaccess
+```
+
+and copypase this and then press ctrl+d
+
+```
+php_value upload_max_filesize 2000M
+php_value post_max_size 2000M
+php_value max_execution_time 0
+php_value max_input_time 200
+```
+
+You can load database through the mysql command line in mysql container.
+Enter the mysql container:
+
+```
+docker exec -it mysql bash
+```
+
+in /var/lib/mysql folder run following command (but of course first place your db file there):
+
+```
+mysql -uroot -ppassword wordpress < ./your_database_name.sql;
+```
+
 #### Useful Docker commands
 
 ```docker
@@ -74,6 +119,14 @@ docker-compose restart
 # enter inside of the container
 docker exec -it <container name> /bin/bash
 
+# check if u have any volumes on the system
+docker volume ls
+
+# create new volume
+docker volume create <name_of_volume>
+
+# inspect volume
+docker volume inspect <name_of_volume>
 
 
 ```
